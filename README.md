@@ -53,20 +53,47 @@ Sobre esa representación compacta el programa debe:
 
 ### 3.1 Codificación de las fichas (3 bits)
 
-| Código | Binario | Significado |
-|---|---|---|
-| 0 | `000` | _(pendiente de definir)_ |
-| 1 | `001` | _(pendiente)_ |
-| 2 | `010` | _(pendiente)_ |
-| 3 | `011` | _(pendiente)_ |
-| 4 | `100` | _(pendiente)_ |
-| 5 | `101` | _(pendiente)_ |
-| 6 | `110` | _(pendiente)_ |
-| 7 | `111` | _(pendiente)_ |
+| Código | Binario | Significado | En pantalla |
+|---|---|---|---|
+| 0 | `000` | Posición vacía | `.` |
+| 1 | `001` | Ficha 1 | `1` |
+| 2 | `010` | Ficha 2 | `2` |
+| 3 | `011` | Ficha 3 | `3` |
+| 4 | `100` | Ficha 4 | `4` |
+| 5 | `101` | Ficha 5 | `5` |
+| 6 | `110` | Ficha 6 | `6` |
+| 7 | `111` | Marcada para eliminar | `*` |
 
-> Seis códigos representan las seis fichas del juego; los dos restantes quedan libres para
-> estados auxiliares. La asignación concreta y su justificación se documentan aquí una vez
-> tomada la decisión en la fase de análisis.
+**Por qué la posición vacía es `000`:**
+
+1. Al reservar el bloque y ponerlo en ceros, el tablero queda vacío recorriendo **bytes**, no
+   posiciones lógicas.
+2. Verificar si una posición está vacía se reduce a comparar contra cero.
+3. El enunciado obliga a agrupar los bits sobrantes a la izquierda de la trama, de modo que
+   ese relleno existe siempre. Con `000` como vacío, el relleno **es** una zona vacía y no
+   puede confundirse con una ficha; con cualquier otra codificación habría que tratarlo como
+   un caso aparte.
+
+**Por qué las fichas van de `001` a `110`:**
+
+El código almacenado coincide con el número de la ficha, por lo que el generador aleatorio
+produce directamente el valor que se escribe en memoria, sin tabla de conversión intermedia.
+El carácter mostrado en pantalla es el mismo dígito, lo que permite contrastar a simple vista
+la vista de fichas con la vista binaria. Además todos los caracteres ocupan un ancho fijo, lo
+que mantiene alineadas las columnas del tablero.
+
+**Por qué `111` significa "marcada para eliminar":**
+
+Una combinación no puede eliminarse en el momento de detectarla, porque las mismas posiciones
+todavía deben compararse en el barrido perpendicular. El proceso es entonces: barrido
+horizontal, barrido vertical y, solo al final, marcado de todas las posiciones involucradas.
+Así una ficha que pertenece simultáneamente a una combinación horizontal y a una vertical se
+procesa una sola vez.
+
+El estado marcado también permite **mostrar el tablero con las fichas condenadas visibles**
+antes de que desaparezcan, lo cual hace comprensible la secuencia de eliminación. Como `111`
+tiene sus tres bits en uno, marcar una posición es una operación `OR` con la máscara, sin
+necesidad de limpiar previamente los bits anteriores.
 
 ### 3.2 De la posición lógica a la memoria
 
