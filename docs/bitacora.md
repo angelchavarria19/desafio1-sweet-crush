@@ -1,19 +1,8 @@
-# Bitácora de desarrollo
+# Bitácora
 
-Registro de problemas encontrados y decisiones tomadas. Se llena **sobre la marcha**:
-esta bitácora es la materia prima del punto (d) del informe — "problemas de desarrollo
-que afrontó" — y de buena parte de la sustentación oral.
+Aquí voy anotando los problemas que salieron y cómo los arreglé.
 
-Formato de cada entrada:
-
-## AAAA-MM-DD — Título corto del problema
-
-**Qué pasó:**
-
-**Por qué pasó:**
-
-**Cómo lo resolví:**
-
-**Qué aprendí / qué haría distinto:**
-
----
+- Las fichas que quedan partidas entre dos bytes: toca leer el pedazo de cada byte y juntarlos.
+- Una ficha que está en una combinación horizontal y vertical a la vez: primero se marcan
+  todas en un mapa de bits y al final se eliminan, así no se cuenta dos veces.
+- Pendiente: hay combinaciones horizontales que no se están eliminando.
